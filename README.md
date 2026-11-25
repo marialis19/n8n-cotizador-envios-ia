@@ -1,4 +1,4 @@
-# 📦 Cotizador de envíos con IA — n8n
+#  Cotizador de envíos con IA — n8n
 
 Automatización que recibe pedidos de cotización escritos en **lenguaje natural**, usa **IA** para extraer los datos del envío, **valida y calcula** el precio con código, **registra** cada cotización en Google Sheets y **responde por email** al cliente.
 
@@ -8,7 +8,7 @@ Pensado para el flujo de una empresa de **logística internacional** (China · M
 
 ---
 
-## 🎯 Problema que resuelve
+##  Problema que resuelve
 
 Los pedidos de cotización llegan escritos de forma libre:
 
@@ -16,7 +16,7 @@ Los pedidos de cotización llegan escritos de forma libre:
 
 Normalmente una persona tiene que leerlos, sacar los datos, calcular el precio, registrarlo y contestar. Este flujo lo hace en segundos. Si al pedido le falta información, le pide al cliente **solo los datos que faltan**.
 
-## ⚙️ Cómo funciona
+##  Cómo funciona
 
 ```
 Formulario ─► IA (Gemini) ─► Validación y cálculo (JS) ─► If ─┬─ completo ──► Google Sheets ─► Gmail: cotización
@@ -57,7 +57,7 @@ Ejemplo real de salida del nodo Code:
 
 > Las tarifas son **ficticias** y se usan solo con fines demostrativos.
 
-## 🧠 Decisiones de diseño, desafíos y soluciones
+##  Decisiones de diseño, desafíos y soluciones
 
 | Desafío | Solución |
 |---|---|
@@ -72,7 +72,7 @@ Ejemplo real de salida del nodo Code:
 
 **n8n** (self-hosted con Docker) · **Google Gemini API** (LLM) · **JavaScript** · **Google Sheets API** · **Gmail API** · **OAuth 2.0** · **Docker**
 
-## 🚀 Cómo ejecutarlo
+##  Cómo ejecutarlo
 
 1. Levantar n8n con Docker:
    ```bash
@@ -88,7 +88,7 @@ Ejemplo real de salida del nodo Code:
 4. Crear una planilla con las columnas: `fecha | nombre | email | origen | destino | modalidad | peso_kg | tarifa_usd_kg | total_usd`, y seleccionarla en el nodo de Google Sheets.
 5. Ejecutar el flujo y completar el formulario.
 
-## 🔜 Próximas mejoras
+##  Próximas mejoras
 
 - Recibir los pedidos directamente desde **Gmail** o **WhatsApp Business API** en lugar del formulario.
 - Tarifas por ruta y peso volumétrico, tomadas de una planilla en vez de estar fijas en el código.
@@ -102,4 +102,4 @@ AI-powered shipping quote automation built with **n8n**. It receives free-text q
 
 ---
 
-👩‍💻 **Marialis Aquino** — [LinkedIn](https://www.linkedin.com/in/marialis-aquino-006a07149/) · [GitHub](https://github.com/marialis19)
+ **Marialis Aquino** — [LinkedIn](https://www.linkedin.com/in/marialis-aquino-006a07149/) · [GitHub](https://github.com/marialis19)

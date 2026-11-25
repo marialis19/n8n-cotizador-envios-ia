@@ -4,8 +4,6 @@ Automatización que recibe pedidos de cotización escritos en **lenguaje natural
 
 Pensado para el flujo de una empresa de **logística internacional** (China · Miami · Latinoamérica): carga aérea, marítima y courier.
 
-![Flujo en n8n](docs/img/flujo.png)
-
 ---
 
 ##  Problema que resuelve

@@ -1,0 +1,498 @@
+{
+  "name": "Cotizador de envíos",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Cotización de Envío",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Pedido",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f1e5f4df-fd5d-4d81-999c-59a4a4adea96",
+      "name": "On form submission",
+      "webhookId": "4b9cd174-31a7-46e2-b292-13b1ec4d2add"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-flash-lite-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        224
+      ],
+      "id": "7d2bdee7-6fd3-445f-8a5f-217d910bbc52",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YeBl8qmMlKNcPMoX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\"origen\":\"Guangzhou\",\"destino\":\"Córdoba\",\"modalidad\":\"aereo\",\"bultos\":3,\"peso_por_bulto_kg\":20,\"peso_total_kg\":0,\"producto\":\"repuestos\",\"datos_faltantes\":[]}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        224
+      ],
+      "id": "149639cb-7224-4fe9-b09e-2d9c6852383d",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sos un asistente de una empresa de logística internacional que opera entre China, Miami y Latinoamérica.\nExtraé los datos de este pedido de cotización.\nLa modalidad tiene que ser una de estas: \"aereo\", \"maritimo\" o \"courier\".\nSi un dato no aparece, dejalo vacío (o en 0 si es un número) y agregá el nombre de ese dato a \"datos_faltantes\". \nNo hagas cálculos.\nSi el pedido indica el peso de cada bulto, ponelo en \"peso_por_bulto_kg\".\nSi indica el peso total, ponelo en \"peso_total_kg\".\nPedido: {{ $json.Pedido }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        208,
+        0
+      ],
+      "id": "96dbbab5-1bdf-4bca-93f3-a694df3724b4",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "7447729b-6504-4fc5-adc8-fb2b0e1f473d",
+              "leftValue": "={{ $json.completo }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        800,
+        112
+      ],
+      "id": "46a64c79-f47b-4349-8cf7-c13f7ba69b66",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1PYHLEriFmb0Tivptd9OJKJ9QrHinL6M_SiUtH1dxrns",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PYHLEriFmb0Tivptd9OJKJ9QrHinL6M_SiUtH1dxrns/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PYHLEriFmb0Tivptd9OJKJ9QrHinL6M_SiUtH1dxrns/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "origen",
+              "displayName": "origen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "destino",
+              "displayName": "destino",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "modalidad",
+              "displayName": "modalidad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "peso_kg",
+              "displayName": "peso_kg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tarifa_usd_kg",
+              "displayName": "tarifa_usd_kg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_usd",
+              "displayName": "total_usd",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pedido",
+              "displayName": "pedido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "bultos",
+              "displayName": "bultos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "peso_por_bulto_kg",
+              "displayName": "peso_por_bulto_kg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "peso_total_kg",
+              "displayName": "peso_total_kg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "producto",
+              "displayName": "producto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "datos_faltantes",
+              "displayName": "datos_faltantes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "completo",
+              "displayName": "completo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "faltan",
+              "displayName": "faltan",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1024,
+        16
+      ],
+      "id": "b17e7700-4044-4275-9094-1bb7d64ed696",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "QFqtNKTZp2WXbB05",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Code').item.json.email }}",
+        "subject": "=Cotización de envío: {{ $('Code').item.json.origen }} → {{ $('Code').item.json.destino }}",
+        "emailType": "text",
+        "message": "=Hola {{ $('Code').item.json.nombre }},  Gracias por tu consulta. Esta es tu cotización:  • Origen: {{ $('Code').item.json.origen }} • Destino: {{ $('Code').item.json.destino }} • Modalidad: {{ $('Code').item.json.modalidad }} • Peso total: {{ $('Code').item.json.peso_kg }} kg • Tarifa: USD {{ $('Code').item.json.tarifa_usd_kg }} por kg • TOTAL ESTIMADO: USD {{ $('Code').item.json.total_usd }}  Cotización orientativa, sujeta a confirmación. Saludos, Equipo de Cotizaciones",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        16
+      ],
+      "id": "44c88602-aa51-4953-8bde-3b9bef62472e",
+      "name": "Send a message",
+      "webhookId": "1af99e85-cd62-4d35-b8ae-fd52adfe3067",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "8cvombSTHCbXlEHI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Necesitamos más datos para tu cotizació",
+        "emailType": "text",
+        "message": "=Hola {{ $json.nombre }},  Recibimos tu pedido: \"{{ $json.pedido }}\"  Para poder cotizarlo nos falta: {{ $json.faltan.join(', ') }}.  ¿Nos los podés enviar? Así te pasamos la cotización enseguida. Saludos, Equipo de Cotizaciones",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        208
+      ],
+      "id": "88598ba8-fc55-4e5e-9293-6da220dfdad7",
+      "name": "Send a message1",
+      "webhookId": "be9c631c-be4c-489d-8fcd-c9c21c0bb774",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "8cvombSTHCbXlEHI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tarifas ficticias en USD por kg, según modalidad\nconst tarifas = { aereo: 9, maritimo: 2.5, courier: 14 };\nconst MINIMO = 50; // cobro mínimo en USD\n\n// Datos del formulario (nombre y email del cliente)\nconst formularios = $('On form submission').all();\n\nreturn $input.all().map((item, i) => {\n  const d = item.json.output;        // lo que extrajo la IA\n  const form = formularios[i].json;  // lo que escribió el cliente\n\n  // La cuenta la hace el código, no la IA\n  const peso_kg = d.peso_total_kg > 0\n    ? d.peso_total_kg\n    : (d.bultos || 1) * (d.peso_por_bulto_kg || 0);\n\n  // Validamos nosotros qué datos faltan\n  const faltan = [];\n  if (!d.origen) faltan.push('origen');\n  if (!d.destino) faltan.push('destino');\n  if (peso_kg <= 0) faltan.push('peso');\n  if (!tarifas[d.modalidad]) faltan.push('modalidad (aéreo, marítimo o courier)');\n\n  const completo = faltan.length === 0;\n  const tarifa = tarifas[d.modalidad] ?? 0;\n  const total = completo ? Math.max(peso_kg * tarifa, MINIMO) : 0;\n\n  return {\n    json: {\n      fecha: $now.toFormat('dd/MM/yyyy HH:mm'),\n      nombre: form['Nombre'],\n      email: form['Email'],\n      pedido: form['Pedido'],\n      ...d,\n      peso_kg,\n      completo,\n      faltan,\n      tarifa_usd_kg: tarifa,\n      total_usd: Math.round(total * 100) / 100,\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "c29ffec2-5d5e-4ab2-abfd-c7744b9dbef0",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "552b8394-ea56-43e4-8db5-e4e48fb8de47",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eff03eefce342addfc6de7b26bf0dc4a5f5d47bb67e44ed0173b0a363efcf642"
+  },
+  "nodeGroups": [],
+  "id": "3uSffknkXCSUSlyy",
+  "tags": []
+}

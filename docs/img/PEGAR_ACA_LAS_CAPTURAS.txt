@@ -1,0 +1,6 @@
+Pegá acá tus 4 capturas con estos nombres exactos:
+  flujo.png
+  planilla.png
+  mail-cotizacion.png
+  mail-datos-faltantes.png
+Después borrá este archivo.
